@@ -3,13 +3,6 @@ import type { WbBoxTariffsData, WbBoxTariffRow } from "#services/wb/wb.types.js"
 
 const TABLE = "wb_box_tariffs";
 
-/**
- * Upserts tariff data for a given date into the database.
- * If a record for (tariff_date, warehouse_name) already exists, it is updated in-place.
- *
- * @param data - Parsed WB API response data
- * @param tariffDate - ISO date string (YYYY-MM-DD); defaults to today
- */
 export async function upsertTariffs(data: WbBoxTariffsData, tariffDate?: string): Promise<void> {
     const date = tariffDate ?? new Date().toISOString().split("T")[0];
 
@@ -30,7 +23,6 @@ export async function upsertTariffs(data: WbBoxTariffsData, tariffDate?: string)
         box_storage_coef_expr: wh.boxStorageCoefExpr,
     }));
 
-    // Process in chunks to avoid hitting query parameter limits
     const CHUNK_SIZE = 50;
     for (let i = 0; i < rows.length; i += CHUNK_SIZE) {
         const chunk = rows.slice(i, i + CHUNK_SIZE);
@@ -55,17 +47,8 @@ export async function upsertTariffs(data: WbBoxTariffsData, tariffDate?: string)
     }
 }
 
-/**
- * Retrieves the latest day's tariff rows, sorted by delivery coefficient ascending.
- *
- * @returns Array of tariff rows sorted by box_delivery_coef_expr ASC
- */
 export async function getLatestTariffs(): Promise<WbBoxTariffRow[]> {
-    const latestDate = await knex(TABLE).max("tariff_date as max_date").first<{ max_date: string | null }>();
-
-    if (!latestDate?.max_date) {
-        return [];
-    }
-
-    return knex(TABLE).where("tariff_date", latestDate.max_date).orderBy("box_delivery_coef_expr", "asc");
+    return knex(TABLE)
+        .where("tariff_date", knex(TABLE).max("tariff_date"))
+        .orderBy("box_delivery_coef_expr", "asc");
 }

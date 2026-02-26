@@ -5,10 +5,6 @@ import { env } from "#config/env/env.js";
 
 const logger = getLogger("update-sheets");
 
-/**
- * Reads the latest day's tariff data from the database (sorted by delivery coefficient ASC)
- * and pushes it to all configured Google Sheets.
- */
 export async function updateSheetsJob(): Promise<void> {
     logger.info(`Starting Google Sheets update for ${env.GOOGLE_SPREADSHEET_IDS.length} spreadsheet(s)`);
 

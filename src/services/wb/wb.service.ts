@@ -4,22 +4,12 @@ import type { WbBoxTariffsData, WbBoxTariffsResponseRaw, WbWarehouseTariffRaw } 
 
 const WB_TARIFFS_URL = "https://common-api.wildberries.ru/api/v1/tariffs/box";
 
-/**
- * Parses a Russian-formatted number string to a float.
- * Returns null for empty strings or "-" (unavailable value).
- *
- * @example parseRuNumber("89,7") → 89.7
- * @example parseRuNumber("-")   → null
- */
 function parseRuNumber(value: string): number | null {
     if (!value || value.trim() === "-") return null;
     const num = parseFloat(value.replace(",", "."));
     return isNaN(num) ? null : num;
 }
 
-/**
- * Parses a raw warehouse tariff entry, converting all string fields to numbers.
- */
 function parseWarehouse(raw: WbWarehouseTariffRaw) {
     return {
         warehouseName: raw.warehouseName,
@@ -36,13 +26,6 @@ function parseWarehouse(raw: WbWarehouseTariffRaw) {
     };
 }
 
-/**
- * Fetches box tariff data from the Wildberries API for a given date
- * and parses all string values to numbers.
- *
- * @param date - ISO date string (YYYY-MM-DD); defaults to today
- * @returns Parsed tariff data ready for storage
- */
 export async function fetchWbBoxTariffs(date?: string): Promise<WbBoxTariffsData> {
     const targetDate = date ?? new Date().toISOString().split("T")[0];
 

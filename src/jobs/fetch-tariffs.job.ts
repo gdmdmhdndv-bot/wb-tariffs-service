@@ -4,10 +4,6 @@ import { getLogger } from "#utils/logger.js";
 
 const logger = getLogger("fetch-tariffs");
 
-/**
- * Fetches the current day's box tariffs from the WB API and upserts them into the database.
- * Designed to run hourly — records for the same day are updated in-place.
- */
 export async function fetchTariffsJob(): Promise<void> {
     const today = new Date().toISOString().split("T")[0];
     logger.info(`Starting tariff fetch for date: ${today}`);

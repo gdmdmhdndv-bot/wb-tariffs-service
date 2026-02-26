@@ -6,7 +6,6 @@ dotenv.config();
 const envSchema = z.object({
     NODE_ENV: z.enum(["development", "production"]).default("development"),
 
-    // PostgreSQL
     POSTGRES_HOST: z.string().default("localhost"),
     POSTGRES_PORT: z
         .string()
@@ -17,10 +16,8 @@ const envSchema = z.object({
     POSTGRES_USER: z.string().default("postgres"),
     POSTGRES_PASSWORD: z.string().default("postgres"),
 
-    // Wildberries API
     WB_API_TOKEN: z.string().min(1, "WB_API_TOKEN is required"),
 
-    // Google Sheets
     GOOGLE_SERVICE_ACCOUNT_EMAIL: z.string().email("Invalid service account email"),
     GOOGLE_PRIVATE_KEY: z.string().min(1, "GOOGLE_PRIVATE_KEY is required"),
     GOOGLE_SPREADSHEET_IDS: z
